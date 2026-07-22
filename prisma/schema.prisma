@@ -8,29 +8,31 @@ datasource db {
 }
 
 model Driver {
-  id          Int      @id @default(autoincrement())
+  id          Int              @id @default(autoincrement())
   firstName   String
   lastName    String
   phone       String?
   email       String?
   licenseNo   String?
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  active      Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  assignments TripAssignment[]
 }
 
 model Bus {
-  id          Int      @id @default(autoincrement())
-  busNumber   String   @unique
+  id          Int              @id @default(autoincrement())
+  busNumber   String
   make        String?
   model       String?
   year        Int?
   vin         String?
-  plateNumber String?
-  seating     Int?
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  active      Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  assignments TripAssignment[]
 }
 
 model CharterParty {
@@ -44,8 +46,53 @@ model CharterParty {
   state          String?
   zip            String?
   notes          String?
-  pickupAddress String?
-  active         Boolean @default(true)
+  pickupAddress  String?
+  active         Boolean  @default(true)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  trips          Trip[]
+}
+
+model Trip {
+  id               Int                @id @default(autoincrement())
+  tripNumber       String             @unique
+  tripDate         DateTime
+
+  charterPartyId   Int
+  charterParty     CharterParty       @relation(fields: [charterPartyId], references: [id])
+
+  pickupLocation   String
+  destination      String
+
+  passengerCount   Int?
+
+  status           String             @default("Scheduled")
+
+  notes            String?
+
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  assignments      TripAssignment[]
+}
+
+model TripAssignment {
+  id                 Int      @id @default(autoincrement())
+
+  tripId             Int
+  trip               Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  driverId           Int
+  driver             Driver   @relation(fields: [driverId], references: [id])
+
+  busId              Int
+  bus                Bus      @relation(fields: [busId], references: [id])
+
+  beginningOdometer  Int?
+  endingOdometer     Int?
+  fuelAdded          Int?
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }

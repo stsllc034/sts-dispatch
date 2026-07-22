@@ -63,12 +63,11 @@ useEffect(() => {
 
     try {
       const response = await fetch("/api/charter-parties", {
-        method: editingParty ? "PUT" : "POST",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id: editingParty?.id,
           companyName,
           contactName,
           phone,
@@ -84,27 +83,25 @@ useEffect(() => {
       });
 
       if (!response.ok) {
-        throw new Error(editingParty ? "Unable to update Charter Party." : "Unable to save Charter Party.");
+        throw new Error("Unable to save Charter Party.");
       }
 
-      if (!editingParty) {
-        setCompanyName("");
-        setContactName("");
-        setPhone("");
-        setEmail("");
-        setBillingAddress("");
-        setCity("");
-        setState("");
-        setZip("");
-        setPickupAddress("");
-        setNotes("");
-        setActive(true);
-      }
+      setCompanyName("");
+      setContactName("");
+      setPhone("");
+      setEmail("");
+      setBillingAddress("");
+      setCity("");
+      setState("");
+      setZip("");
+      setPickupAddress("");
+      setNotes("");
+      setActive(true);
 
       onSaved();
     } catch (error) {
       console.error(error);
-      alert(editingParty ? "There was a problem updating the Charter Party." : "There was a problem saving the Charter Party.");
+      alert("There was a problem saving the Charter Party.");
     } finally {
       setSaving(false);
     }
@@ -113,7 +110,7 @@ useEffect(() => {
   return (
     <div className="bg-gray-100 rounded-lg p-6 mb-6">
       <h3 className="text-xl font-bold mb-6">
-        {editingParty ? "Edit Charter Party" : "Add Charter Party"}
+        Add Charter Party
       </h3>
 
       {/* Charter Party Information */}
@@ -267,9 +264,7 @@ useEffect(() => {
           disabled={saving}
           className="bg-blue-700 hover:bg-blue-800 disabled:bg-gray-500 text-white font-semibold px-6 py-3 rounded-lg"
         >
-          {saving
-            ? (editingParty ? "Updating..." : "Saving...")
-            : (editingParty ? "Update Charter Party" : "Save Charter Party")}
+          {saving ? "Saving..." : "Save Charter Party"}
         </button>
       </div>
     </div>

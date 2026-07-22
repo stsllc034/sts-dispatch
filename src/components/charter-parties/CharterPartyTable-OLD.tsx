@@ -3,13 +3,11 @@ import type { CharterParty } from "@/types/charter-party";
 interface CharterPartyTableProps {
   charterParties: CharterParty[];
   onEdit: (party: CharterParty) => void;
-  onDeleted: () => void;
 }
 
 export default function CharterPartyTable({
   charterParties,
   onEdit,
-  onDeleted,
 }: CharterPartyTableProps) {
   if (charterParties.length === 0) {
     return (
@@ -60,32 +58,12 @@ export default function CharterPartyTable({
                 </td>
 
                 <td className="p-3 text-center">
-                  <div className="flex justify-center gap-2">
                   <button
                     onClick={() => onEdit(party)}
                     className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-md text-sm font-medium"
                   >
                     Edit
                   </button>
-                  <button
-                    onClick={async () => {
-                      if (!confirm(`Delete ${party.companyName}?`)) return;
-                      const r = await fetch("/api/charter-parties", {
-                        method: "DELETE",
-                        headers: {"Content-Type":"application/json"},
-                        body: JSON.stringify({id: party.id}),
-                      });
-                      if (!r.ok) {
-                        alert("Unable to delete Charter Party.");
-                        return;
-                      }
-                      onDeleted();
-                    }}
-                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm font-medium"
-                  >
-                    Delete
-                  </button>
-                </div>
                 </td>
               </tr>
             ))}

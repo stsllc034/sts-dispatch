@@ -96,7 +96,6 @@ export default function CharterPartiesPage() {
           <CharterPartyTable
             charterParties={charterParties}
             onEdit={handleEdit}
-            onDeleted={loadCharterParties}
           />
         )}
 

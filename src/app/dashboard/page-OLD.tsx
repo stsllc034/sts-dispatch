@@ -41,27 +41,6 @@ export default function Dashboard() {
 
       </div>
 
-
-
-      <div className="bg-white rounded-xl shadow p-8 mt-8">
-
-        <h3 className="text-2xl font-bold mb-4">
-          Trips Module
-        </h3>
-
-        <p className="text-gray-700 mb-6">
-          The Trips module is the heart of the dispatch system. We'll build it
-          in phases, beginning with trip creation.
-        </p>
-
-        <button
-          className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-6 py-3 rounded-lg"
-        >
-          + New Trip
-        </button>
-
-      </div>
-
     </AppLayout>
   );
 }

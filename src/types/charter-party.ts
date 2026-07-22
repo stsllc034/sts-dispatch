@@ -8,5 +8,7 @@ export interface CharterParty {
   city: string | null;
   state: string | null;
   zip: string | null;
+  pickupAddress: string | null;
+  notes: string | null;
   active: boolean;
 }
