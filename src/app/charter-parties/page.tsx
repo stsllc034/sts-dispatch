@@ -9,8 +9,8 @@ import type { CharterParty } from "@/types/charter-party";
 export default function CharterPartiesPage() {
   const [showForm, setShowForm] = useState(false);
   const [charterParties, setCharterParties] = useState<CharterParty[]>([]);
-  const [editingParty, setEditingParty] = useState<CharterParty | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editingParty, setEditingParty] = useState<CharterParty | null>(null);
 
   async function loadCharterParties() {
     try {
@@ -30,19 +30,14 @@ export default function CharterPartiesPage() {
 
   function handleSaved() {
     loadCharterParties();
-    setEditingParty(null);
     setShowForm(false);
   }
 
-  function handleEdit(party: CharterParty) {
-    setEditingParty(party);
-    setShowForm(true);
-  }
-
-  function handleAddNew() {
-    setEditingParty(null);
-    setShowForm(true);
-  }
+function handleEdit(party: CharterParty) {
+  setEditingParty(party);
+  setShowForm(true);
+}
+  
 
   return (
     <AppLayout title="Charter Parties">
@@ -55,32 +50,27 @@ export default function CharterPartiesPage() {
             </h2>
 
             <p className="text-gray-600">
-              Manage schools, organizations, churches, businesses and other
-              charter clients.
+              Manage schools, organizations, churches, businesses and other charter clients.
             </p>
           </div>
 
           <button
             onClick={() => {
-              if (showForm) {
-                setShowForm(false);
-                setEditingParty(null);
-              } else {
-                handleAddNew();
-              }
-            }}
+  setEditingParty(null);
+  setShowForm(!showForm);
+}}
             className="bg-blue-700 hover:bg-blue-800 text-white px-5 py-2 rounded-lg font-semibold"
           >
             {showForm ? "Close" : "+ Add Charter Party"}
           </button>
         </div>
 
-        {showForm && (
-          <CharterPartyForm
-            onSaved={handleSaved}
-            editingParty={editingParty}
-          />
-        )}
+   {showForm && (
+  <CharterPartyForm
+    onSaved={handleSaved}
+    editingParty={editingParty}
+  />
+)}
 
         <div className="mb-6">
           <input

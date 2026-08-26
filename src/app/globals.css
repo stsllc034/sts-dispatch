@@ -11,6 +11,19 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
+html {
+  font-size: 90%;
+}
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea {
+  font-size: 1rem;
+}
 
 body {
   background: var(--background);

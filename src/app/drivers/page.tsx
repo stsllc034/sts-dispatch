@@ -22,48 +22,96 @@ export default function DriversPage() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [licenseNo, setLicenseNo] = useState("");
+  const [password, setPassword] = useState("");
+  const [editingDriverId, setEditingDriverId] = useState<number | null>(null);
 
   async function loadDrivers() {
-    const response = await fetch("/api/drivers");
-    const data = await response.json();
-    setDrivers(data);
-  }
+  const response = await fetch("/api/drivers", {
+    cache: "no-store",
+  });
+  const data = await response.json();
+  setDrivers(data);
+}
 
   useEffect(() => {
     loadDrivers();
   }, []);
+function handleEdit(driver: Driver) {
+  setEditingDriverId(driver.id);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  setFirstName(driver.firstName);
+  setLastName(driver.lastName);
+  setPhone(driver.phone ?? "");
+  setEmail(driver.email ?? "");
+  setLicenseNo(driver.licenseNo ?? "");
 
-    const response = await fetch("/api/drivers", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        firstName,
-        lastName,
-        phone,
-        email,
-        licenseNo,
-      }),
-    });
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+}
+async function handleDelete(id: number) {
+  const confirmed = window.confirm(
+    "Are you sure you want to delete this driver?"
+  );
 
-    if (response.ok) {
-      await loadDrivers();
+  if (!confirmed) return;
 
-      setFirstName("");
-      setLastName("");
-      setPhone("");
-      setEmail("");
-      setLicenseNo("");
+  const response = await fetch(`/api/drivers/${id}`, {
+    method: "DELETE",
+  });
 
-      alert("Driver saved successfully!");
-    } else {
-      alert("Unable to save driver.");
-    }
+  if (response.ok) {
+    await loadDrivers();
+    alert("Driver deleted successfully!");
+  } else {
+    alert("Unable to delete driver.");
   }
+}
+  async function handleSubmit(e: React.FormEvent) {
+  e.preventDefault();
+
+  const url = editingDriverId
+    ? `/api/drivers/${editingDriverId}`
+    : "/api/drivers";
+
+  const method = editingDriverId ? "PUT" : "POST";
+
+  const response = await fetch(url, {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+  firstName,
+  lastName,
+  phone,
+  email,
+  licenseNo,
+  password,
+}),
+  });
+const result = await response.json();
+  if (response.ok) {
+    await loadDrivers();
+
+    setFirstName("");
+    setLastName("");
+    setPhone("");
+    setEmail("");
+    setLicenseNo("");
+    setPassword("");
+    setEditingDriverId(null);
+
+    alert(
+      editingDriverId
+        ? "Driver updated successfully!"
+        : "Driver saved successfully!"
+    );
+  } else {
+  alert(result.error || "Unable to save driver.");
+}
+}
 
   return (
     <AppLayout title="Drivers">
@@ -144,7 +192,19 @@ export default function DriversPage() {
                 className="w-full rounded border p-2"
               />
             </div>
+<div>
+  <label className="block text-sm font-medium mb-1">
+    Portal Password
+  </label>
 
+  <input
+    type="password"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    className="w-full rounded border p-2"
+    placeholder="Enter portal password"
+  />
+</div>
             <div className="flex items-end">
               <button
                 type="submit"
@@ -156,7 +216,11 @@ export default function DriversPage() {
           </form>
         </div>
 
-        <DriverTable drivers={drivers} />
+        <DriverTable
+  drivers={drivers}
+  onEdit={handleEdit}
+  onDelete={handleDelete}
+/>
 
       </div>
     </AppLayout>

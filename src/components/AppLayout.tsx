@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
+import { usePathname } from "next/navigation";
 
 interface AppLayoutProps {
   title: string;
@@ -11,7 +14,8 @@ export default function AppLayout({
   title,
   children,
 }: AppLayoutProps) {
-
+  const pathname = usePathname();
+  const isDriver = pathname.startsWith("/driver");
 
   return (
     <main className="min-h-screen bg-gray-100">
@@ -64,76 +68,112 @@ export default function AppLayout({
             Navigation
           </h2>
 
-          <nav className="space-y-2">
+<nav className="space-y-2">
+  {isDriver ? (
+    <>
+      <Link
+        href="/driver"
+        className="block p-3 rounded hover:bg-gray-200"
+      >
+        🏠 My Driver Portal
+      </Link>
 
-            <Link
-              href="/dashboard"
-              className="block p-3 rounded hover:bg-gray-200"
-            >
-              🏠 Dashboard
-            </Link>
+      
 
-            <Link
-              href="/new-trip"
-              className="block p-3 rounded hover:bg-gray-200"
-            >
-              🚍 New Trip
-            </Link>
+      <Link
+  href="/driver/calendar"
+  className="block p-3 rounded hover:bg-gray-200"
+>
+  📅 My Calendar
+</Link>
+    </>
+  ) : (
+    <>
+      <Link
+        href="/dashboard"
+        className="block p-3 rounded hover:bg-gray-200"
+      >
+        🏠 Dashboard
+      </Link>
 
-            <Link
-              href="/active-trips"
-              className="block p-3 rounded hover:bg-gray-200"
-            >
-              📋 Active Trips
-            </Link>
+      <Link
+        href="/new-trip"
+        className="block p-3 rounded hover:bg-gray-200"
+      >
+        🚍 New Trip
+      </Link>
 
-            <Link
-              href="/drivers"
-              className="block p-3 rounded hover:bg-gray-200"
-            >
-              👨‍✈️ Drivers
-            </Link>
+      <Link
+        href="/trips"
+        className="block p-3 rounded hover:bg-gray-200"
+      >
+        📋 Active Trips
+      </Link>
 
-            <Link
-              href="/fleet"
-              className="block p-3 rounded hover:bg-gray-200"
-            >
-              🚌 Fleet
-            </Link>
+      <Link
+        href="/weekly-schedule"
+        className="block p-3 rounded hover:bg-gray-200"
+      >
+        📅 Weekly Schedule
+      </Link>
 
-            <Link
-              href="/charter-parties"
-              className="block p-3 rounded hover:bg-gray-200"
-            >
-              🏫 Charter Parties
-            </Link>
+      <Link
+        href="/drivers"
+        className="block p-3 rounded hover:bg-gray-200"
+      >
+        👨‍✈️ Drivers
+      </Link>
 
-            <Link
-              href="/reports"
-              className="block p-3 rounded hover:bg-gray-200"
-            >
-              📊 Reports
-            </Link>
+      <Link
+        href="/fleet"
+        className="block p-3 rounded hover:bg-gray-200"
+      >
+        🚌 Fleet
+      </Link>
 
-            <Link
-              href="/settings"
-              className="block p-3 rounded hover:bg-gray-200"
-            >
-              ⚙️ Settings
-            </Link>
+      <Link
+        href="/charter-parties"
+        className="block p-3 rounded hover:bg-gray-200"
+      >
+        🏫 Charter Parties
+      </Link>
 
-          </nav>
+      <Link
+        href="/reports"
+        className="block p-3 rounded hover:bg-gray-200"
+      >
+        📊 Reports
+      </Link>
+
+      <Link
+        href="/settings"
+        className="block p-3 rounded hover:bg-gray-200"
+      >
+        ⚙️ Settings
+      </Link>
+    </>
+  )}
+</nav> 
 
         </aside>
 
         {/* Main Content */}
-        <section className="flex-1 p-8">
+        <section className="flex-1 w-full max-w-7xl mx-auto px-8 py-6">
 
-          <h2 className="text-3xl font-bold mb-6">
-            {title}
-          </h2>
+          <div className="flex items-center justify-between mb-6">
+  <h2 className="text-3xl font-bold">
+    {title}
+  </h2>
 
-          {children}
+  <Link
+    href={isDriver ? "/driver" : "/dashboard"}
+    className="bg-white hover:bg-gray-200 text-blue-900 px-4 py-2 rounded-lg shadow font-semibold"
+  >
+    🏠 Dashboard
+  </Link>
+</div>
+
+{children}
 
         </section>
 

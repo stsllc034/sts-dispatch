@@ -10,10 +10,14 @@ interface Driver {
 
 interface DriverTableProps {
   drivers: Driver[];
+  onEdit: (driver: Driver) => void;
+  onDelete: (id: number) => void;
 }
 
 export default function DriverTable({
   drivers,
+  onEdit,
+  onDelete,
 }: DriverTableProps) {
   if (drivers.length === 0) {
     return (
@@ -44,6 +48,7 @@ export default function DriverTable({
               <th className="text-left p-3">Email</th>
               <th className="text-left p-3">License</th>
               <th className="text-left p-3">Status</th>
+              <th className="text-left p-3">Actions</th>
             </tr>
           </thead>
 
@@ -72,6 +77,23 @@ export default function DriverTable({
                 <td className="p-3">
                   {driver.active ? "🟢 Active" : "🔴 Inactive"}
                 </td>
+                <td className="p-3">
+  <div className="flex gap-2">
+    <button
+  onClick={() => onEdit(driver)}
+  className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
+>
+  ✏️ Edit
+</button>
+
+    <button
+  onClick={() => onDelete(driver.id)}
+  className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+>
+  🗑️ Delete
+</button>
+  </div>
+</td>
               </tr>
             ))}
           </tbody>

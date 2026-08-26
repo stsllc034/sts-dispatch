@@ -1,17 +1,23 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { randomBytes, scryptSync } from "crypto";
+
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const drivers = await prisma.driver.findMany({
-    orderBy: [
-      {
-        lastName: "asc",
-      },
-      {
-        firstName: "asc",
-      },
-    ],
-  });
+  where: {
+    active: true,
+  },
+  orderBy: [
+    {
+      lastName: "asc",
+    },
+    {
+      firstName: "asc",
+    },
+  ],
+});
 
   return NextResponse.json(drivers);
 }
@@ -22,13 +28,30 @@ export async function POST(request: Request) {
 
     console.log("Received:", body);
 
+    let passwordHash: string | undefined;
+
+    if (body.password && body.password.trim() !== "") {
+      const salt = randomBytes(16).toString("hex");
+
+      const hash = scryptSync(
+        body.password,
+        salt,
+        64
+      ).toString("hex");
+
+      passwordHash = `${salt}:${hash}`;
+    }
+
     const driver = await prisma.driver.create({
       data: {
         firstName: body.firstName,
         lastName: body.lastName,
         phone: body.phone || null,
-        email: body.email || null,
+        email: body.email
+          ? body.email.toLowerCase().trim()
+          : null,
         licenseNo: body.licenseNo || null,
+        passwordHash,
         active: true,
       },
     });
