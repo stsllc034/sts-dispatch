@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { neon } from "@neondatabase/serverless";
 import {
   randomBytes,
   scryptSync,
   timingSafeEqual,
 } from "crypto";
+
+const sql = neon(process.env.DATABASE_URL!);
 
 export async function POST(request: Request) {
   try {
@@ -17,19 +19,28 @@ export async function POST(request: Request) {
       );
     }
 
-    const admin = await prisma.administrator.findFirst({
-      where: {
-        email: email.toLowerCase().trim(),
-        active: true,
-      },
-    });
+    const normalizedEmail = email.toLowerCase().trim();
 
-console.log(
-  "ADMIN LOGIN CHECK:",
-  email.toLowerCase().trim(),
-  !!admin,
-  !!admin?.passwordHash
-);
+    const admins = await sql`
+      SELECT
+        "id",
+        "email",
+        "passwordHash",
+        "active"
+      FROM "Administrator"
+      WHERE "email" = ${normalizedEmail}
+        AND "active" = true
+      LIMIT 1
+    `;
+
+    const admin = admins[0];
+
+    console.log(
+      "ADMIN LOGIN CHECK:",
+      normalizedEmail,
+      !!admin,
+      !!admin?.passwordHash
+    );
 
     if (!admin || !admin.passwordHash) {
       return NextResponse.json(
@@ -71,15 +82,13 @@ console.log(
       Date.now() + 1000 * 60 * 60 * 24 * 7
     );
 
-    await prisma.administrator.update({
-      where: {
-        id: admin.id,
-      },
-      data: {
-        sessionToken,
-        sessionExpiresAt,
-      },
-    });
+    await sql`
+      UPDATE "Administrator"
+      SET
+        "sessionToken" = ${sessionToken},
+        "sessionExpiresAt" = ${sessionExpiresAt}
+      WHERE "id" = ${admin.id}
+    `;
 
     const response = NextResponse.json({
       success: true,

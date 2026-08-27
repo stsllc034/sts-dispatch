@@ -13,6 +13,7 @@
     "deploy:vinext": "vinext-cloudflare deploy --config dist/server/wrangler.json"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "@prisma/adapter-pg": "^6.19.0",
     "@prisma/client": "^6.19.0",
     "@react-pdf/renderer": "^4.5.1",
