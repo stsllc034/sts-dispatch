@@ -15,7 +15,9 @@ export default function AppLayout({
   children,
 }: AppLayoutProps) {
   const pathname = usePathname();
-  const isDriver = pathname.startsWith("/driver");
+  const isDriver =
+  pathname === "/driver" ||
+  pathname.startsWith("/driver/");
 
   return (
     <main className="min-h-screen bg-gray-100">
