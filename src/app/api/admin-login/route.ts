@@ -6,10 +6,9 @@ import {
   timingSafeEqual,
 } from "crypto";
 
-const sql = neon(process.env.DATABASE_URL!);
-
 export async function POST(request: Request) {
   try {
+    const sql = neon(process.env.DATABASE_URL!);
     const { email, password } = await request.json();
 
     if (!email || !password) {
